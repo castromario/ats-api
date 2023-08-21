@@ -1,6 +1,7 @@
 import colors from 'colors';
 import dotenv from 'dotenv';
 import express from 'express';
+import cors  from 'cors';
 import 'express-async-errors';
 import morgan from 'morgan';
 const app = express();
@@ -41,6 +42,14 @@ app.use(xss());
 app.use(mongoSanitize());
 app.use(cookieParser());
 
+const corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // If you're using cookies or authentication
+  optionsSuccessStatus: 204, // Some legacy browsers choke on 200
+};
+
+app.use(cors(corsOptions));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authenticateUser, jobsRouter);
 
@@ -51,6 +60,10 @@ app.get('*', (req, res) => {
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+app.use((req, res, next) => {
+  console.log('Request received:', req.headers.origin); // Log the origin header
+  next();
+});
 
 const port = process.env.PORT || 5000;
 
