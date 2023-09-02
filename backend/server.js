@@ -21,6 +21,7 @@ import connectDB from './db/connect.js';
 // routers
 import authRouter from './routes/authRoutes.js';
 import jobsRouter from './routes/jobsRoutes.js';
+import fileRouter from './routes/fileRoutes.js';
 
 // middleware
 import authenticateUser from './middleware/auth.js';
@@ -52,6 +53,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+app.use('/api/v1/file',  fileRouter);
 
 // only when ready to deploy
 app.get('*', (req, res) => {
