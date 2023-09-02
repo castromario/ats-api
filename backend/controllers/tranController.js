@@ -2,40 +2,35 @@ import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 import mongoose from 'mongoose';
 import { BadRequestError, NotFoundError } from '../errors/index.js';
-import Job from '../models/Job.js';
+import Tran from '../models/Tran.js';
 import checkPermissions from '../utils/checkPermissions.js';
 
-const createJob = async (req, res) => {
-  const { position, company } = req.body;
-
-  if (!position || !company) {
-    throw new BadRequestError('Please provide all values');
-  }
-  req.body.createdBy = req.user.userId;
-  const job = await Job.create(req.body);
-  res.status(StatusCodes.CREATED).json({ job });
+const createTran = async (req, res) => {
+  req.body.userID = req.user.userId;
+  const tran = await Tran.create(req.body);
+  res.status(StatusCodes.CREATED).json({ tran });
 };
-const getAllJobs = async (req, res) => {
-  const { status, jobType, sort, search } = req.query;
+const getAllTran = async (req, res) => {
+  const { tranStatus, jobID , sort, search } = req.query;
 
   const queryObject = {
-    //createdBy: req.user.userId,
+   // createdBy: req.user.userId,
   };
   // add stuff based on condition
 
-  if (status && status !== 'all') {
-    queryObject.status = status;
+  if (tranStatus && tranStatus !== 'all') {
+    queryObject.tranStatus = tranStatus;
   }
-  if (jobType && jobType !== 'all') {
-    queryObject.jobType = jobType;
+  if (jobID && jobID !== 'all') {
+    queryObject.jobID = jobID;
   }
   if (search) {
-    queryObject.position = { $regex: search, $options: 'i' };
-    
+    queryObject.jobID = { $regex: search, $options: 'i' };
+    queryObject.userID = { $regex: search, $options: 'i' };
   }
   // NO AWAIT
 
-  let result = Job.find(queryObject);
+  let result = Tran.find(queryObject);
 
   // chain sort conditions
 
@@ -46,10 +41,10 @@ const getAllJobs = async (req, res) => {
     result = result.sort('createdAt');
   }
   if (sort === 'a-z') {
-    result = result.sort('position');
+    result = result.sort('jobID');
   }
   if (sort === 'z-a') {
-    result = result.sort('-position');
+    result = result.sort('-jobID');
   }
 
   //
@@ -61,12 +56,12 @@ const getAllJobs = async (req, res) => {
 
   result = result.skip(skip).limit(limit);
 
-  const jobs = await result;
+  const tran = await result;
 
-  const totalJobs = await Job.countDocuments(queryObject);
-  const numOfPages = Math.ceil(totalJobs / limit);
+  const totaltran = await Tran.countDocuments(queryObject);
+  const numOfPages = Math.ceil(totaltran / limit);
 
-  res.status(StatusCodes.OK).json({ jobs, totalJobs, numOfPages });
+  res.status(StatusCodes.OK).json({ tran, totaltran, numOfPages });
 };
 const updateJob = async (req, res) => {
   const { id: jobId } = req.params;
@@ -139,5 +134,5 @@ const showStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
 
-export { createJob, deleteJob, getAllJobs, updateJob, showStats };
+export { createTran, deleteTran, getAllTran, updateTran, showStats };
 
