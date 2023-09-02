@@ -44,8 +44,9 @@ app.use(mongoSanitize());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: '*',
+  origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  
   credentials: true, // If you're using cookies or authentication
   optionsSuccessStatus: 204, // Some legacy browsers choke on 200
 };

@@ -12,7 +12,7 @@ const register = async (req, res) => {
   if (userAlreadyExists) {
     throw new BadRequestError('Email already in use');
   }
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, ...req.body });
 
   const token = user.createJWT();
   attachCookie({ res, token });
@@ -47,19 +47,23 @@ const updateUser = async (req, res) => {
   if (!email || !name || !lastName || !location) {
     throw new BadRequestError('Please provide all values');
   }
-  const user = await User.findOne({ _id: req.user.userId });
+  const userId = req.user.userId;
+  const updatedUserData = req.body;
+  // const updatedUser = await User.findByIdAndUpdate(, updatedUserData, {
+  //   new: true, // Return the updated user data
+  // });
 
-  user.email = email;
-  user.name = name;
-  user.lastName = lastName;
-  user.location = location;
 
-  await user.save();
+  // Find the user by ID and update their details, using $set to update or create fields
+  const updatedUser = await User.findByIdAndUpdate(userId,updatedUserData);
 
-  const token = user.createJWT();
-  attachCookie({ res, token });
+  if (!updatedUser) {
+    return res.status(404).json({ message: 'User not found' });
+  }
 
-  res.status(StatusCodes.OK).json({ user, location: user.location });
+  // Save the updated user document
+
+  res.status(StatusCodes.OK).json({ updatedUser });
 };
 
 const getCurrentUser = async (req, res) => {
