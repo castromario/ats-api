@@ -19,7 +19,7 @@ const getAllJobs = async (req, res) => {
   const { status, jobType, sort, search } = req.query;
 
   const queryObject = {
-    createdBy: req.user.userId,
+    //createdBy: req.user.userId,
   };
   // add stuff based on condition
 
@@ -31,6 +31,7 @@ const getAllJobs = async (req, res) => {
   }
   if (search) {
     queryObject.position = { $regex: search, $options: 'i' };
+    
   }
   // NO AWAIT
 

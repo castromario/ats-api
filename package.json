@@ -7,12 +7,8 @@
   "scripts": {
     "start": "node backend/server",
     "server": "nodemon backend/server",
-    "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "data:import": "node backend/populate",
-    "data:destroy": "node backend/populate -d",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
-  },
+    "build": "npm run server"
+    },
   "keywords": [],
   "author": "Abdur Rahman",
   "license": "ISC",
@@ -30,12 +26,14 @@
     "express-async-errors": "^3.1.1",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^6.7.0",
+    "fs": "^0.0.1-security",
     "helmet": "^6.0.1",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "mongoose": "^6.8.0",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   }
