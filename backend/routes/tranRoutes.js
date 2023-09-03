@@ -1,13 +1,18 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
-import { createTran, deleteTran, getAllTran, showStats, updateTran } from '../controllers/tranController.js';
+import {
+  createTran,
+  deleteTran,
+  getAllTran,
+  updateTran,
+  getTranById,
+} from "../controllers/tranController.js";
 
-import testUser from '../middleware/testUser.js';
+import testUser from "../middleware/testUser.js";
 
-router.route('/').post(testUser, createTran).get(getAllTran);
-// remember about :id
-router.route('/stats').get(showStats);
-router.route('/:id').delete(testUser, deleteTran).patch(testUser, updateTran);
+router.route("/search").get(getAllTran);
+router.route("/new").post(createTran);
+router.route("/byId/:id").delete(deleteTran).patch(updateTran).get(getTranById);
 
 export default router;
