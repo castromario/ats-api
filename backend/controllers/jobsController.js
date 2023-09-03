@@ -31,6 +31,7 @@ const getAllJobs = async (req, res) => {
   }
   if (search) {
     queryObject.position = { $regex: search, $options: 'i' };
+    
   }
   // NO AWAIT
 
